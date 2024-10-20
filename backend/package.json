@@ -15,5 +15,8 @@
     "vue": "latest",
     "vue-router": "latest",
     "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "nuxt-headlessui": "^1.2.0"
   }
 }
