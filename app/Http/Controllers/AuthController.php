@@ -14,6 +14,8 @@ class AuthController extends Controller
             'password' => 'required',
             'remember' => 'boolean'
         ]);
+
+
         $remember = $credentials['remember'] ?? false;
         unset($credentials['remember']);
         if (!Auth::attempt($credentials, $remember)) {
@@ -23,6 +25,9 @@ class AuthController extends Controller
         }
 
         /** @var \App\Models\User $user */
+
+        // dd("Asdas");
+
         $user = Auth::user();
         if (!$user->is_admin) {
             Auth::logout();
@@ -31,7 +36,7 @@ class AuthController extends Controller
             ], 403);
         }
         $token = $user->createToken('main')->plainTextToken;
-        return response([
+        return response(content: [
             'user' => $user,
             'token' => $token
         ]);
@@ -44,6 +49,6 @@ class AuthController extends Controller
         $user = Auth::user();
         $user->currentAccessToken()->delete();
 
-        return response('', 204);
+        return response('', status: 203);
     }
 }

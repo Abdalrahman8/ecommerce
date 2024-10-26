@@ -1,12 +1,12 @@
 <template>
   <header class="flex justify-between items-center p-3 h-14 shadow bg-white">
     <button @click="emit('toggle-sidebar')" class="flex items-center justify-center rounded transition-colors w-8 h-8 text-gray-700 hover:bg-black/10">
-      <MenuIcon class="w-6"/>
+      <MenuIcon class="w-6" />
     </button>
     <Menu as="div" class="relative inline-block text-left">
       <MenuButton class="flex items-center">
-        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="rounded-full w-8 mr-2">
-        <small>John Smith</small>
+        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="rounded-full w-8 mr-2" />
+        <small>{{ userName }}</small>
         <ChevronDownIcon
           class="h-5 w-5 text-violet-200 hover:text-violet-100"
           aria-hidden="true"
@@ -42,6 +42,7 @@
             </MenuItem>
             <MenuItem v-slot="{ active }">
               <button
+                @click="logout"
                 :class="[
                   active ? 'bg-indigo-600 text-white' : 'text-gray-900',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
@@ -63,14 +64,46 @@
 </template>
 
 <script setup>
-import {MenuIcon, LogoutIcon, UserIcon} from '@heroicons/vue/outline'
-import {Menu, MenuButton, MenuItems, MenuItem} from '@headlessui/vue'
-import {ChevronDownIcon} from '@heroicons/vue/solid'
+import { ref, computed } from 'vue'
+import { MenuIcon, LogoutIcon, UserIcon } from '@heroicons/vue/outline'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { ChevronDownIcon } from '@heroicons/vue/solid'
+import { useRouter } from 'vue-router'
+import axiosClient from "../src/store/axios";
+
+
 
 const emit = defineEmits(['toggle-sidebar'])
+const router = useRouter()
+const userName = computed(() => {
+  // Check if the code is running on the client-side
+  if (process.client) {
+    return JSON.parse(localStorage.getItem("user"))?.name;
+  }
+  return ''; // Return an empty string if not on the client
+});
 
+const logout = async () => {
+  try {
+    // Call your logout API using axios
+    await axiosClient.post('/logout', {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    // Clear localStorage and redirect to login
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    router.push("/login");
+
+  } catch (error) {
+    console.log("Logout failed:", error);
+  }
+}
 </script>
 
 <style scoped>
-
+/* Add any additional styles here */
 </style>
