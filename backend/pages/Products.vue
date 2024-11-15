@@ -30,108 +30,20 @@
       </div>
       <Spinner v-if="products.loading"/>
       <template v-else>
-  
-        <table class="table-auto w-full">
-      <thead>
-        <tr>
-          <TableHeaderCell
-            field="id"
+          <ProductTable
+            :products="products"
             :sortField="sortField"
             :sortDirection="sortDirection"
-            @click="sortProducts('id')"
-          >
-            ID
-          </TableHeaderCell>
-          <TableHeaderCell
-            field="image"
-            :sortField="sortField"
-            :sortDirection="sortDirection"
-          >
-            Image
-          </TableHeaderCell>
-          <TableHeaderCell
-            field="title"
-            :sortField="sortField"
-            :sortDirection="sortDirection"
-            @click="sortProducts('title')"
-          >
-            Title
-          </TableHeaderCell>
-          <TableHeaderCell
-            field="price"
-            :sortField="sortField"
-            :sortDirection="sortDirection"
-            @click="sortProducts('price')"
-          >
-            Price
-          </TableHeaderCell>
-          <TableHeaderCell
-            field="updated_at"
-            :sortField="sortField"
-            :sortDirection="sortDirection"
-            @click="sortProducts('updated_at')"
-          >
-            Last Updated At
-          </TableHeaderCell>
-        </tr>
-      </thead>
-          <tbody>
-          <tr v-for="product of products.data">
-            <td class="border-b p-2 ">{{ product.id }}</td>
-            <td class="border-b p-2 ">
-              <img class="w-16" :src="product.image" :alt="product.title">
-            </td>
-            <td class="border-b p-2 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">{{
-                product.title
-              }}
-            </td>
-            <td class="border-b p-2">
-              {{ product.price }}
-            </td>
-            <td class="border-b p-2 ">
-              {{ product.updated_at }}
-            </td>
-          </tr>
-          </tbody>
-        </table>
-  
-        <div class="flex justify-between items-center mt-5">
-          <span>
-            Showing from {{ products.from }} to {{ products.to }}
-          </span>
-          <nav
-            v-if="products.total > products.limit"
-            class="relative z-0 inline-flex justify-center rounded-md shadow-sm -space-x-px"
-            aria-label="Pagination"
-          >
-            <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-            <a
-              v-for="(link, i) of products.links"
-              :key="i"
-              :disabled="!link.url"
-              href="#"
-              @click="getForPage($event, link)"
-              aria-current="page"
-              class="relative inline-flex items-center px-4 py-2 border text-sm font-medium whitespace-nowrap"
-              :class="[
-                link.active
-                  ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
-                i === 0 ? 'rounded-l-md' : '',
-                i === products.links.length - 1 ? 'rounded-r-md' : '',
-                !link.url ? ' bg-gray-100 text-gray-700': ''
-              ]"
-              v-html="link.label"
-            >
-            </a>
-          </nav>
-        </div>
-      </template>
-    </div>
+            @sortProducts="sortProducts"
+            @getForPage="getForPage"
+          />
+        </template>
+      </div>
   </template>
   
   <script setup>
   import store from "../src/store/index.js";
+  import ProductTable from '../components/products/ProductTable.vue';
   
   const PRODUCTS_PER_PAGE = 5; // to be added to its own file later
 
@@ -144,15 +56,6 @@
   onMounted(() => {
     getProducts();
   })
-  
-  function getForPage(ev, link) {
-    ev.preventDefault();
-    if (!link.url || link.active) {
-      return;
-    }
-  
-    getProducts(link.url)
-  }
   
   function getProducts(url = null) {
     store.dispatch("getProducts", {
@@ -174,9 +77,12 @@
   getProducts();
 }
 
+  function getForPage(url) {
+    getProducts(url);
+  }
   </script>
   
   <style scoped>
-  
+  /* Add any component-specific styles here */
   </style>
   
