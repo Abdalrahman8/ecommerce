@@ -93,6 +93,8 @@
   </template>
   
   <script setup>
+
+  import TableHeaderCell from './TableHeaderCell.vue';
   
   const props = defineProps({
     products: {
