@@ -61,6 +61,9 @@ const store = createStore({
             commit('setProducts', [false]);
           });
       },
+    createProduct({ commit }, product) {
+      return axiosClient.post('/products', product);
+    },
   },
   mutations: {
     setUser(state, user) {
