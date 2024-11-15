@@ -32,15 +32,49 @@
       <template v-else>
   
         <table class="table-auto w-full">
-          <thead>
-          <tr>
-            <th class="border-b-2 p-2 text-left">ID</th>
-            <th class="border-b-2 p-2 text-left">Image</th>
-            <th class="border-b-2 p-2 text-left">Title</th>
-            <th class="border-b-2 p-2 text-left">Price</th>
-            <th class="border-b-2 p-2 text-left">Last Updated At</th>
-          </tr>
-          </thead>
+      <thead>
+        <tr>
+          <TableHeaderCell
+            field="id"
+            :sortField="sortField"
+            :sortDirection="sortDirection"
+            @click="sortProducts('id')"
+          >
+            ID
+          </TableHeaderCell>
+          <TableHeaderCell
+            field="image"
+            :sortField="sortField"
+            :sortDirection="sortDirection"
+          >
+            Image
+          </TableHeaderCell>
+          <TableHeaderCell
+            field="title"
+            :sortField="sortField"
+            :sortDirection="sortDirection"
+            @click="sortProducts('title')"
+          >
+            Title
+          </TableHeaderCell>
+          <TableHeaderCell
+            field="price"
+            :sortField="sortField"
+            :sortDirection="sortDirection"
+            @click="sortProducts('price')"
+          >
+            Price
+          </TableHeaderCell>
+          <TableHeaderCell
+            field="updated_at"
+            :sortField="sortField"
+            :sortDirection="sortDirection"
+            @click="sortProducts('updated_at')"
+          >
+            Last Updated At
+          </TableHeaderCell>
+        </tr>
+      </thead>
           <tbody>
           <tr v-for="product of products.data">
             <td class="border-b p-2 ">{{ product.id }}</td>
@@ -104,6 +138,8 @@
   const perPage = ref(PRODUCTS_PER_PAGE);
   const search = ref('');
   const products = computed(() => store.state.products);
+  const sortField = ref('updated_at');
+  const sortDirection = ref('desc');
   
   onMounted(() => {
     getProducts();
@@ -123,8 +159,21 @@
       url,
       search: search.value,
       perPage: perPage.value,
+      sortField: sortField.value,
+      sortDirection: sortDirection.value,
     });
   }
+
+  function sortProducts(field) {
+  if (field === sortField.value) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField.value = field;
+    sortDirection.value = 'asc';
+  }
+  getProducts();
+}
+
   </script>
   
   <style scoped>

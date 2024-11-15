@@ -43,19 +43,24 @@ const store = createStore({
           return response;
         });
     },
-    getProducts({ commit }, { url = null, search, perPage }) {
-      commit('setProducts', [true]);
-      url = url || '/products';
-      return axiosClient.get(url, {
-        params: { search, per_page: perPage }
-      })
-        .then((response) => {
-          commit('setProducts', [false, response.data]);
+    getProducts({ commit }, { url = null, search, perPage, sortField, sortDirection }) {
+        commit('setProducts', [true]);
+        url = url || '/products';
+        return axiosClient.get(url, {
+          params: {
+            search,
+            per_page: perPage,
+            sort_field: sortField,
+            sort_direction: sortDirection,
+          },
         })
-        .catch(() => {
-          commit('setProducts', [false]);
-        });
-    },
+          .then((response) => {
+            commit('setProducts', [false, response.data]);
+          })
+          .catch(() => {
+            commit('setProducts', [false]);
+          });
+      },
   },
   mutations: {
     setUser(state, user) {
