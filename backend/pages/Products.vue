@@ -35,8 +35,8 @@
           />
         </div>
       </div>
-      <Spinner v-if="products.loading" />
-      <template v-else>
+      
+      <template>
         <ProductTable
           :products="products"
           :sortField="sortField"
@@ -53,11 +53,7 @@
 <script setup>
 import store from '../src/store/index.js';
 import ProductTable from '~/components/products/ProductTable.vue';
-
 import AddNewProduct from '~/components/products/AddNewProduct.vue';
-/* import ProductTable from '../components/products/ProductTable.vue';
-import Spinner from '../components/core/Spinner.vue';
-import AddNewProduct from '../components/products/AddNewProduct.vue'; */
 
 const PRODUCTS_PER_PAGE = 5; // Adjust as needed
 

@@ -81,9 +81,10 @@
                     required
                   />
                   <CustomInput
+                    type="file"
                     class="mb-2"
-                    v-model="product.image"
-                    label="Product Image URL"
+                    @change="file => product.image = file"
+                    label="Product Image"
                   />
                 </div>
                 <footer
@@ -125,7 +126,7 @@ import CustomInput from '../CustomInput.vue';
 import store from '~/src/store';
 const product = ref({
   title: '',
-  image: '',
+  image: null, // changed from empty string to null
   description: '',
   price: '',
 });
@@ -159,8 +160,8 @@ function onSubmit() {
   const productData = {
     title,
     price,
-    image: product.value.image ? product.value.image.trim() : null,
-    description: product.value.description ? product.value.description.trim() : null,
+    image: product.value.image, // Keep the file object
+    description: product.value.description?.trim() || null,
   };
 
   store
@@ -173,7 +174,7 @@ function onSubmit() {
         // Reset the product form
         product.value = {
           title: '',
-          image: '',
+          image: null, // to null
           description: '',
           price: '',
         };

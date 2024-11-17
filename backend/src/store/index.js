@@ -43,7 +43,7 @@ const store = createStore({
           return response;
         });
     },
-    getProducts({ commit }, { url = null, search, perPage, sortField, sortDirection }) {
+    getProducts({ commit }, { url = null, search, perPage, sortField, sortDirection } = {}) {
         commit('setProducts', [true]);
         url = url || '/products';
         return axiosClient.get(url, {
@@ -62,7 +62,23 @@ const store = createStore({
           });
       },
     createProduct({ commit }, product) {
-      return axiosClient.post('/products', product);
+      let formData;
+
+      if (product.image instanceof File) {
+        formData = new FormData();
+        formData.append('title', product.title);
+        formData.append('image', product.image);
+        formData.append('description', product.description);
+        formData.append('price', product.price);
+      } else {
+        formData = product;
+      }
+    
+      return axiosClient.post('/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     },
   },
   mutations: {
