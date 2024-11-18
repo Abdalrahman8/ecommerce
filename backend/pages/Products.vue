@@ -21,9 +21,7 @@
           >
             <option value="5">5</option>
             <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
+            <!-- ... -->
           </select>
         </div>
         <div>
@@ -36,26 +34,29 @@
         </div>
       </div>
       
-      <template>
-        <ProductTable
-          :products="products"
-          :sortField="sortField"
-          :sortDirection="sortDirection"
-          @sortProducts="sortProducts"
-          @getForPage="getForPage"
-        />
-      </template>
+      <!-- Include ProductTable component -->
+      <ProductTable
+        :products="products"
+        :sortField="sortField"
+        :sortDirection="sortDirection"
+        @sortProducts="sortProducts"
+        @getForPage="getForPage"
+        @edit-product="editProduct"
+        @delete-product="deleteProduct"
+      />
     </div>
-    <AddNewProduct v-model="showProductModal" />
+    <!-- Pass the selected product to AddNewProduct component -->
+    <AddNewProduct v-model="showProductModal" :product="product" />
   </div>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue';
 import store from '../src/store/index.js';
 import ProductTable from '~/components/products/ProductTable.vue';
 import AddNewProduct from '~/components/products/AddNewProduct.vue';
 
-const PRODUCTS_PER_PAGE = 5; // Adjust as needed
+const PRODUCTS_PER_PAGE = 5;
 
 const perPage = ref(PRODUCTS_PER_PAGE);
 const search = ref('');
@@ -63,6 +64,7 @@ const products = computed(() => store.state.products);
 const sortField = ref('updated_at');
 const sortDirection = ref('desc');
 const showProductModal = ref(false);
+const product = ref({});
 
 onMounted(() => {
   getProducts();
@@ -92,8 +94,37 @@ function getForPage(url) {
   getProducts(url);
 }
 
-function showAddNewModal() {
+function showAddNewModal(p = null) {
+  if (p) {
+    product.value = { ...p };
+  } else {
+    product.value = {
+      title: '',
+      image: null,
+      description: '',
+      price: '',
+    };
+  }
   showProductModal.value = true;
+}
+
+function editProduct(p) {
+  // Optionally fetch the product from the server
+  // store.dispatch('getProduct', p.id).then(({ data }) => {
+  //   product.value = data;
+  //   showAddNewModal();
+  // });
+  product.value = { ...p };
+  showAddNewModal(p);
+}
+
+function deleteProduct(p) {
+  if (!confirm(`Are you sure you want to delete the product "${p.title}"?`)) {
+    return;
+  }
+  store.dispatch('deleteProduct', p.id).then(() => {
+    getProducts();
+  });
 }
 </script>
 

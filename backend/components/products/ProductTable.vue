@@ -46,20 +46,17 @@
         </thead>
         <tbody>
           <tr v-for="product in products.data" :key="product.id">
-            <td class="border-b p-2">{{ product.id }}</td>
-            <td class="border-b p-2">
-              <img
-                v-if="product.image_url"
-                class="w-16 h-16 object-cover"
-                :src="product.image_url"
-                :alt="product.title"
-              />
+            <td>{{ product.id }}</td>
+            <td>
+              <img :src="product.image_url" :alt="product.title" class="w-16 h-16 object-cover" />
             </td>
-            <td class="border-b p-2 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">
-              {{ product.title }}
+            <td>{{ product.title }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.updated_at }}</td>
+            <td>
+              <button @click="$emit('edit-product', product)" class="text-blue-500">Edit</button>
+              <button @click="$emit('delete-product', product)" class="text-red-500 ml-2">Delete</button>
             </td>
-            <td class="border-b p-2">{{ product.price }}</td>
-            <td class="border-b p-2">{{ product.updated_at }}</td>
           </tr>
         </tbody>
       </table>
@@ -116,7 +113,7 @@
     },
   });
   
-  const emit = defineEmits(['sortProducts', 'getForPage']);
+  const emit = defineEmits(['sortProducts', 'getForPage', 'sortProducts', 'getForPage']);
   
   function sortProducts(field) {
     emit('sortProducts', field);

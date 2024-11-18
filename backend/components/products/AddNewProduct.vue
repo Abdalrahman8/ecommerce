@@ -35,7 +35,7 @@
                   as="h3"
                   class="text-lg leading-6 font-medium text-gray-900"
                 >
-                  Create new Product
+                  {{ product.id ? `Update product: "${product.title}"` : 'Create new Product' }}
                 </DialogTitle>
                 <button
                   @click="closeModal"
@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   Dialog,
   DialogPanel,
@@ -124,15 +124,13 @@ import {
 } from '@headlessui/vue';
 import CustomInput from '../CustomInput.vue';
 import store from '~/src/store';
-const product = ref({
-  title: '',
-  image: null, // changed from empty string to null
-  description: '',
-  price: '',
-});
 
 const props = defineProps({
   modelValue: Boolean,
+  product: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -142,56 +140,80 @@ const show = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
+const product = ref({ ...props.product });
+
+watch(
+  () => props.product,
+  (newProduct) => {
+    product.value = { ...newProduct };
+  }
+);
+
 function closeModal() {
   show.value = false;
 }
 
 function onSubmit() {
-  // Trim whitespace and prepare data
   const title = product.value.title.trim();
   const price = parseFloat(product.value.price);
 
   if (!title || isNaN(price)) {
-    // Optionally display an error message to the user
     alert('Please provide a valid title and price.');
     return;
   }
 
   const productData = {
+    id: product.value.id,
     title,
     price,
-    image: product.value.image, // Keep the file object
+    image: product.value.image,
     description: product.value.description?.trim() || null,
   };
 
-  store
-    .dispatch('createProduct', productData)
-    .then((response) => {
-      if (response.status === 201) {
-        // Optionally show a notification here
-        store.dispatch('getProducts');
-        closeModal();
-        // Reset the product form
-        product.value = {
-          title: '',
-          image: null, // to null
-          description: '',
-          price: '',
-        };
-      }
-    })
-    .catch((error) => {
-      if (error.response && error.response.data && error.response.data.errors) {
-        // Handle validation errors returned from the server
-        const errors = error.response.data.errors;
-        console.error('Validation errors:', errors);
-        // Optionally display these errors to the user
-      } else {
-        console.error('Error creating product:', error);
-      }
-    });
+  if (product.value.id) {
+    // Update existing product
+    store
+      .dispatch('updateProduct', productData)
+      .then((response) => {
+        if (response.status === 200) {
+          store.dispatch('getProducts');
+          closeModal();
+          resetForm();
+        }
+      })
+      .catch(handleError);
+  } else {
+    // Create new product
+    store
+      .dispatch('createProduct', productData)
+      .then((response) => {
+        if (response.status === 201) {
+          store.dispatch('getProducts');
+          closeModal();
+          resetForm();
+        }
+      })
+      .catch(handleError);
+  }
 }
 
+function resetForm() {
+  product.value = {
+    title: '',
+    image: null,
+    description: '',
+    price: '',
+  };
+}
+
+function handleError(error) {
+  if (error.response && error.response.data && error.response.data.errors) {
+    const errors = error.response.data.errors;
+    console.error('Validation errors:', errors);
+  } else {
+    console.error('Error submitting product:', error);
+  }
+}
 </script>
 
 <style scoped>

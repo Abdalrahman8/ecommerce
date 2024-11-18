@@ -62,12 +62,14 @@ class ProductController extends Controller
         if (!Storage::disk('public')->exists($path)) {
             Storage::disk('public')->makeDirectory($path, 0755, true);
         }
-    
-        if (!Storage::disk('public')->putFileAs($path, $image, $image->getClientOriginalName())) {
+
+        $storedFile = Storage::disk('public')->putFileAs($path, $image, $image->getClientOriginalName());
+
+        if (!$storedFile) {
             throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
         }
-    
-        return $path . '/' . $image->getClientOriginalName();
+
+        return $storedFile;
     }
     
 
@@ -84,7 +86,25 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $data = $request->validated();
+        $data['updated_by'] = $request->user()->id ?? null;
+
+        /** @var \Illuminate\Http\UploadedFile $image */
+        $image = $data['image'] ?? null;
+        if ($image) {
+            $relativePath = $this->saveImage($image);
+            $data['image'] = $relativePath;
+            $data['image_mime'] = $image->getClientMimeType();
+            $data['image_size'] = $image->getSize();
+
+            // If there is an old image, delete it
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+        }
+
+        $product->update($data);
+
         return new ProductResource($product);
     }
 
@@ -93,6 +113,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        // Delete image file if exists
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
         return response()->noContent();
     }

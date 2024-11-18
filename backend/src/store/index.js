@@ -80,6 +80,52 @@ const store = createStore({
         },
       });
     },
+    getProduct({ commit }, id) {
+      return axiosClient.get(`/products/${id}`);
+    },
+    createProduct({ commit }, product) {
+      let formData;
+
+      if (product.image instanceof File) {
+        formData = new FormData();
+        formData.append('title', product.title);
+        formData.append('image', product.image);
+        formData.append('description', product.description);
+        formData.append('price', product.price);
+      } else {
+        formData = product;
+      }
+
+      return axiosClient.post('/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+    updateProduct({ commit }, product) {
+      const id = product.id;
+      let formData;
+
+      if (product.image instanceof File) {
+        formData = new FormData();
+        formData.append('title', product.title);
+        formData.append('image', product.image);
+        formData.append('description', product.description);
+        formData.append('price', product.price);
+        formData.append('_method', 'PUT');
+      } else {
+        formData = product;
+      }
+
+      return axiosClient.post(`/products/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+    deleteProduct({ commit }, id) {
+      return axiosClient.delete(`/products/${id}`);
+    },
   },
   mutations: {
     setUser(state, user) {
