@@ -28,6 +28,7 @@
                 name="email"
                 placeholder="Your email address"
                 class="border-gray-300 focus:border-purple-500 focus:outline-none focus:ring-purple-500 rounded-md w-full"
+                :value="old('email')"
             />
         </div>
         <div class="mb-4">
@@ -37,6 +38,7 @@
                 name="password"
                 placeholder="Your password"
                 class="border-gray-300 focus:border-purple-500 focus:outline-none focus:ring-purple-500 rounded-md w-full"
+                :value="old('password')"
             />
         </div>
         <div class="flex justify-between items-center mb-5">
