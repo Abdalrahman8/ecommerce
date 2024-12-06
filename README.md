@@ -35,15 +35,15 @@ Follow these steps to set up the project locally.
 
 ### 1\. Clone the Repository
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   bashCopy codegit clone https://github.com/Abdalrahman8/ecommerce.git   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   git clone https://github.com/Abdalrahman8/ecommerce.git   `
 
 ### 2\. Set Up the Backend (Laravel)
 
-1.  bashCopy codecd ecommerce
+1.  cd ecommerce
     
-2.  bashCopy codecomposer install
+2.  composer install
     
-3.  bashCopy codecp .env.example .env[_Laravel Configuration Docs_](https://laravel.com/docs/10.x/configuration)
+3.  cp .env.example .env[_Laravel Configuration Docs_](https://laravel.com/docs/10.x/configuration)
     
     *   Open the .env file and update the following variables:
         
@@ -51,26 +51,26 @@ Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQL
             
         *   DB\_DATABASE, DB\_USERNAME, DB\_PASSWORD with your database credentials
             
-4.  bashCopy codephp artisan key:generate
+4.  php artisan key:generate
     
-5.  bashCopy codephp artisan migrate --seed
+5.  php artisan migrate --seed
     
-6.  bashCopy codephp artisan serveThe backend will be accessible at http://localhost:8000.
+6.  php artisan serveThe backend will be accessible at http://localhost:8000.
     
 
 ### 3\. Set Up the Admin Panel (Nuxt 3)
 
-1.  bashCopy codecd Admin
+1.  cd Admin
     
-2.  bashCopy codenpm install
+2.  npm install
     
 3.  **Configure Environment Variables:**
     
-    *   bashCopy codecp .env.example .env
+    *   cp .env.example .env
         
     *   Update the .env file with necessary variables, such as API endpoints pointing to the Laravel backend.
         
-4.  bashCopy codenpm run devThe admin panel will be accessible at http://localhost:3000.
+4.  npm run dev The admin panel will be accessible at http://localhost:3000.
     
 
 ### 4\. Accessing the Applications
@@ -91,7 +91,7 @@ To prepare the applications for a production environment, follow these steps:
     
     *   Ensure all environment variables in .env are set appropriately for production.
         
-2.  bashCopy codephp artisan config:cachephp artisan route:cachephp artisan view:cache
+2.  php artisan config:cachephp artisan route:cachephp artisan view:cache
     
 3.  **Set Up a Web Server:**
     
@@ -102,9 +102,9 @@ To prepare the applications for a production environment, follow these steps:
 
 ### Admin Panel (Nuxt 3)
 
-1.  bashCopy codenpm run build
+1.  npm run build
     
-2.  bashCopy codenpm run start
+2.  npm run start
     
 3.  **Set Up a Web Server:**
     
