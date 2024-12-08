@@ -1,7 +1,12 @@
 import axios from "axios";
 
+//console.log(`${import.meta.env.VITE_API_BASE_URL}/api`)
+// http://localhost:8000/api/
+ 
+const url = 'http://localhost:8000/api';
+console.log(url);
 const axiosClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`
+  baseURL: url
 });
 
 // Request interceptor to add the Authorization header

@@ -85,6 +85,7 @@
                     class="mb-2"
                     @change="file => product.image = file"
                     label="Product Image"
+                    required
                   />
                 </div>
                 <footer
